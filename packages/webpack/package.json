@@ -1,0 +1,23 @@
+{
+  "name": "@mini-pack/webpack",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {},
+  "bin": {
+    "mini-pack": "ts-node ./bin/webpack.ts"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^9.0.12"
+  },
+  "dependencies": {
+    "@babel/core": "^7.15.5",
+    "@babel/parser": "^7.15.6",
+    "@babel/preset-env": "^7.15.6",
+    "@babel/traverse": "^7.15.4",
+    "@babel/types": "^7.15.6",
+    "@types/babel__core": "^7.1.16",
+    "@types/babel__traverse": "^7.14.2",
+    "fs-extra": "^10.0.0"
+  }
+}

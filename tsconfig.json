@@ -1,0 +1,29 @@
+{
+  "root": true,
+  "compilerOptions": {
+    "module": "es6",
+    "typeRoots": ["./node_modules/@types"],
+    "paths": {},
+    "allowJs": true,
+    // "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": "./"
+  },
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "esModuleInterop": true,
+      "typeRoots": ["./node_modules/@types"]
+    }
+  },
+  "include": ["./packages/*/*"],
+  "exclude": ["node_modules"]
+}
