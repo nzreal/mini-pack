@@ -1,24 +1,47 @@
-import path from 'path';
+import ClearCommentsPlugin from './plugins/ClearCommentsPlugin';
+import GenerateFileListPlugin from './plugins/GenerateFileListPlugin';
+// import TerserPlugin from 'terser-webpack-plugin';
+import OutputAllLifeCyclePlugin from './plugins/OutputAllLifeCyclePlugins';
 import Webpack from 'webpack';
-import TerserPlugin from 'terser-webpack-plugin';
-import ClearCommentPlugin from './plugins/OutputAllLifeCyclePlugins';
+import path from 'path';
 
 const config: Webpack.Configuration = {
-  mode: 'production',
+  mode: 'development',
   entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'webpack.bundle.[hash:6].js',
+    filename: 'webpack.bundle.js',
   },
-  plugins: [new ClearCommentPlugin()],
-  optimization: {
-    // minimize: true,
-    // minimizer: [
-    //   new TerserPlugin({
-    //     extractComments: true,
-    //   }),
-    // ],
+  resolveLoader: {
+    modules: ['node_modules', 'loaders'],
+    extensions: ['.ts', '.js'],
   },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'clear-loader',
+        options: { comments: true, console: false },
+        // use: { loader: 'clear-comments-loader', options: { clear: true } },
+      },
+    ],
+  },
+  plugins: [
+    new OutputAllLifeCyclePlugin({ disableLog: true }),
+    new ClearCommentsPlugin({ rule: /\.js$/ }),
+    new GenerateFileListPlugin(),
+  ],
+
+  stats: 'errors-only',
+  // optimization: {
+  //   // minimize: true,
+  //   // minimizer: [
+  //   //   new TerserPlugin({
+  //   //     extractComments: true,
+  //   //   }),
+  //   // ],
+  // },
 };
 
 export default config;
