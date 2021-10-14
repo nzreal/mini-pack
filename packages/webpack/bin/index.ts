@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-import CoreWebpack from '../libs/coreWebpack';
+import Compiler from '../libs/Compiler';
 
 const run = () => {
   try {
-    new CoreWebpack();
+    const compiler = new Compiler();
+    compiler.run();
   } catch (e) {
     console.error('build error: ', e);
   }

@@ -34,5 +34,6 @@ yarn build-test
 
 - [ ] mini-pack 实现 loader 系统
 - [ ] 实现 dev server
-- [ ] webpack 插件编写实践
+- [x] webpack 插件编写实践
 - [ ] 代码结构优化
+- [ ] test 单测编写 & 插件系统测试

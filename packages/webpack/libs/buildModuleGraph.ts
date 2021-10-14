@@ -3,27 +3,71 @@ import * as t from '@babel/types';
 
 import { ModuleGraph, ModuleInfo } from '../types';
 
+import Compiler from './Compiler';
 import fse from 'fs-extra';
 import { parse } from '@babel/parser';
 import path from 'path';
-import pkg from '../package.json';
 import { default as traverse } from '@babel/traverse';
 
-const rootPath = process.cwd();
+/**
+ * buildModuleGraph
+ * @param entry 入口文件
+ * @returns {ModuleGraph} 模块依赖图
+ * @description 从入口文件构建模块依赖图
+ */
+export default function buildModuleGraph(this: Compiler) {
+  this.hooks.compile.call('');
+
+  const { entry } = this.webpackConfig;
+
+  const moduleGraph: ModuleGraph = {};
+
+  const { name: pkgName } = parsePkg(this.execRootPath);
+
+  const dependedModules = getDependedModulesByEntry(entry, this.execRootPath);
+
+  dependedModules.forEach(({ moduleId, code, deps }) => {
+    moduleGraph[moduleId] = {
+      deps,
+      code: addonSourceUrlInDevtool(code, moduleId, pkgName),
+    };
+  });
+
+  this.hooks.afterCompile.callAsync('', (e) => e);
+
+  return moduleGraph;
+}
+
+function parsePkg(rootPath: string) {
+  try {
+    const pkgInfo = JSON.parse(
+      fse.readFileSync(path.resolve(rootPath, 'package.json'), {
+        encoding: 'utf-8',
+      })
+    );
+    return pkgInfo;
+  } catch (e) {
+    // error handler
+  }
+}
 
 // 源码应该是 plugin
-function getSeparateCodeInDevtool(code: string, filename: string) {
-  return `${code}\n\n\n//# sourceURL=webpack://${pkg.name}/${filename}`;
+function addonSourceUrlInDevtool(
+  code: string,
+  filename: string,
+  pkgName: string
+) {
+  return `${code}\n\n\n//# sourceURL=webpack://${pkgName}/${filename}`;
 }
 
 // 从入口模块获取所有依赖模块的数组
-function getDependedModulesByEntry(entry: string) {
-  const entryModuleInfo = getModuleInfo(entry);
+function getDependedModulesByEntry(entry: string, rootPath: string) {
+  const entryModuleInfo = getModuleInfo(entry, rootPath);
   const parsedModules = [entryModuleInfo];
 
   function parseDependedModuleInfo(deps: string[]) {
     deps.forEach((depId) => {
-      const dependedModuleInfo = getModuleInfo(depId);
+      const dependedModuleInfo = getModuleInfo(depId, rootPath);
       parsedModules.push(dependedModuleInfo);
       parseDependedModuleInfo(dependedModuleInfo.deps);
     });
@@ -34,7 +78,7 @@ function getDependedModulesByEntry(entry: string) {
   return parsedModules;
 }
 
-function getModuleInfo(module: string): ModuleInfo {
+function getModuleInfo(module: string, rootPath: string): ModuleInfo {
   const moduleAbsPath = path.resolve(rootPath, module);
   const moduleCode = fse.readFileSync(moduleAbsPath, {
     encoding: 'utf-8',
@@ -70,29 +114,8 @@ function getModuleInfo(module: string): ModuleInfo {
   const moduleInfo = {
     moduleId: module,
     deps,
-    code: getSeparateCodeInDevtool(code || '', module),
+    code,
   };
 
   return moduleInfo;
-}
-
-/**
- * buildModuleGraph
- * @param entry 入口文件
- * @returns {ModuleGraph} 模块依赖图
- * @description 从入口文件构建模块依赖图
- */
-export default function buildModuleGraph(entry: string) {
-  const moduleGraph: ModuleGraph = {};
-
-  const dependedModules = getDependedModulesByEntry(entry);
-
-  dependedModules.forEach((moduleInfo) => {
-    moduleGraph[moduleInfo.moduleId] = {
-      deps: moduleInfo.deps,
-      code: moduleInfo.code,
-    };
-  });
-
-  return moduleGraph;
 }
