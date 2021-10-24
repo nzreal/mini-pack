@@ -4,7 +4,7 @@ import path from 'path';
 import Compiler from './Compiler';
 
 export function outputBundle(this: Compiler) {
-  const { entry, output } = this.webpackConfig;
+  const { entry, output } = this.config;
 
   const bundledFile = new Template({
     entry,

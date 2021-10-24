@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {},
   "bin": {
-    "mini-pack": "ts-node ./bin/webpack.ts"
+    "mini-pack": "ts-node ./webpack.ts"
   },
   "devDependencies": {
     "@types/fs-extra": "^9.0.12"

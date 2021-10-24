@@ -4,6 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "ts-node ../webpack/bin/index.ts --config webpack.config.js"
+    "build": "ts-node ../webpack/webpack.ts --config webpack.config.js"
   }
 }

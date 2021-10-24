@@ -18,7 +18,7 @@ import { default as traverse } from '@babel/traverse';
 export default function buildModuleGraph(this: Compiler) {
   this.hooks.compile.call('');
 
-  const { entry } = this.webpackConfig;
+  const { entry } = this.config;
 
   const moduleGraph: ModuleGraph = {};
 
@@ -106,7 +106,7 @@ function getModuleInfo(module: string, rootPath: string): ModuleInfo {
     },
   });
 
-  const { code } =
+  const { code = '' } =
     babel.transformFromAstSync(ast, undefined, {
       presets: ['@babel/preset-env'],
     }) || {};
@@ -114,7 +114,7 @@ function getModuleInfo(module: string, rootPath: string): ModuleInfo {
   const moduleInfo = {
     moduleId: module,
     deps,
-    code,
+    code: code as string,
   };
 
   return moduleInfo;

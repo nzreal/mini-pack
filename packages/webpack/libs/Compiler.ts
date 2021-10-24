@@ -1,40 +1,47 @@
 import { AsyncSeriesHook, SyncBailHook, SyncHook } from 'tapable';
 import { ModuleGraph, WebpackConfig } from '../types';
+import errorHandler from '../utils/errorHandler';
 import buildModuleGraph from './buildModuleGraph';
 import { outputBundle } from './outputBundle';
-import parseConfig from './parseConfig';
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface CompilerProps {
+  // config: WebpackConfig;
+}
 
 // TODO: 插件测试
 const hooks = Object.freeze({
-  entryOption: new SyncBailHook<[string], boolean>(['entry']),
-  run: new AsyncSeriesHook<unknown>(['run']),
+  afterPlugins: new SyncHook<[Compiler]>(['compiler']),
+  entryOption: new SyncBailHook<[string, Compiler], boolean>([
+    'entry',
+    'compiler',
+  ]),
+  run: new AsyncSeriesHook<[Compiler]>(['compiler']),
   compile: new SyncHook(['compile']),
   afterCompile: new AsyncSeriesHook(['afterCompile']),
   done: new AsyncSeriesHook(['done']),
 });
 
 export default class Compiler {
-  webpackConfig: WebpackConfig;
+  config: WebpackConfig;
   execRootPath: string;
   hooks: typeof hooks;
   moduleGraph: ModuleGraph;
 
-  constructor() {
+  constructor({}: CompilerProps) {
     this.hooks = hooks;
     this.execRootPath = process.cwd();
-    this.webpackConfig = this._parseConfig();
+    this.config = {} as WebpackConfig;
     this.moduleGraph = {};
   }
 
   _buildModuleGraph = buildModuleGraph;
   _outputBundle = outputBundle;
-  _parseConfig = parseConfig;
 
-  // TODO: simple common error handler
   async run() {
-    this.hooks.run.callAsync('', (e) => e);
+    this.hooks.run.callAsync(this, errorHandler);
     this.moduleGraph = this._buildModuleGraph();
     this._outputBundle();
-    this.hooks.done.callAsync('', (e) => e);
+    this.hooks.done.callAsync(this, errorHandler);
   }
 }
