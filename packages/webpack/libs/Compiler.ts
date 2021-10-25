@@ -1,7 +1,8 @@
 import { AsyncSeriesHook, SyncBailHook, SyncHook } from 'tapable';
 import { ModuleGraph, WebpackConfig } from '../types';
-import errorHandler from '../utils/errorHandler';
+
 import buildModuleGraph from './buildModuleGraph';
+import errorHandler from '../utils/errorHandler';
 import { outputBundle } from './outputBundle';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -9,7 +10,6 @@ export interface CompilerProps {
   // config: WebpackConfig;
 }
 
-// TODO: 插件测试
 const hooks = Object.freeze({
   afterPlugins: new SyncHook<[Compiler]>(['compiler']),
   entryOption: new SyncBailHook<[string, Compiler], boolean>([

@@ -1,7 +1,7 @@
+import Compiler from './Compiler';
 import Template from './Template';
 import fse from 'fs-extra';
 import path from 'path';
-import Compiler from './Compiler';
 
 export function outputBundle(this: Compiler) {
   const { entry, output } = this.config;

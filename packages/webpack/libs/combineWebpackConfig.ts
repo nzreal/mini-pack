@@ -1,7 +1,7 @@
 import { WebpackConfig } from '../types';
+import errorHandler from '../utils/errorHandler';
 import fse from 'fs-extra';
 import path from 'path';
-import errorHandler from '../utils/errorHandler';
 
 const runRootPath = process.cwd();
 const DefaultConfigName = 'webpack.config';
@@ -9,9 +9,10 @@ const DefaultConfigName = 'webpack.config';
 const AcceptedExtensions = ['js', 'ts', 'json'];
 
 /**
- * 解析 config
+ * @name combineWebpackConfig
+ * @description 从 cli 读取参数，读取 webpack 配置文件，
  */
-export default function parseConfig(config?: WebpackConfig) {
+export default function combineWebpackConfig(config?: WebpackConfig) {
   try {
     const parsedOptions = getOptionsFromCLI();
 
@@ -31,7 +32,7 @@ export default function parseConfig(config?: WebpackConfig) {
 
     return config;
   } catch (e) {
-    errorHandler(`parse error ${e}`);
+    errorHandler('Parse error', e);
   }
 }
 

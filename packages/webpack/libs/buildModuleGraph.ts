@@ -4,6 +4,7 @@ import * as t from '@babel/types';
 import { ModuleGraph, ModuleInfo } from '../types';
 
 import Compiler from './Compiler';
+import errorHandler from '../utils/errorHandler';
 import fse from 'fs-extra';
 import { parse } from '@babel/parser';
 import path from 'path';
@@ -16,7 +17,7 @@ import { default as traverse } from '@babel/traverse';
  * @description 从入口文件构建模块依赖图
  */
 export default function buildModuleGraph(this: Compiler) {
-  this.hooks.compile.call('');
+  this.hooks.compile.call(this);
 
   const { entry } = this.config;
 
@@ -33,7 +34,7 @@ export default function buildModuleGraph(this: Compiler) {
     };
   });
 
-  this.hooks.afterCompile.callAsync('', (e) => e);
+  this.hooks.afterCompile.callAsync(this, errorHandler);
 
   return moduleGraph;
 }
@@ -47,7 +48,7 @@ function parsePkg(rootPath: string) {
     );
     return pkgInfo;
   } catch (e) {
-    // error handler
+    errorHandler(e);
   }
 }
 

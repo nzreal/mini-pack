@@ -1,14 +1,16 @@
 import Compiler from './libs/Compiler';
-import parseConfig from './libs/parseConfig';
 import { WebpackConfig } from './types';
+import combineWebpackConfig from './libs/combineWebpackConfig';
 import errorHandler from './utils/errorHandler';
 
 const run = (config?: WebpackConfig) => {
   try {
+    // TODO: maybe separate compiler
     const compiler = new Compiler({});
-    config = parseConfig(config) as WebpackConfig;
-    // apply default config
+    config = combineWebpackConfig(config) as WebpackConfig;
+    // TODO: apply default config
     compiler.config = config;
+    // register plugins
     if (Array.isArray(config.plugins)) {
       for (const plugin of config.plugins) {
         if (typeof plugin === 'function') {
