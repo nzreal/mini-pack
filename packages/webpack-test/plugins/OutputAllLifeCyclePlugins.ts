@@ -1,4 +1,4 @@
-import { Compiler } from 'webpack';
+import { Compilation, Compiler, WebpackPluginInstance } from 'webpack';
 
 const PluginName = 'OutputAllLifeCyclePlugins';
 // 按顺序 打印所有 生命周期阶段钩子
@@ -33,7 +33,7 @@ const PluginName = 'OutputAllLifeCyclePlugins';
  * - infrastructureLog
  * - afterDone
  */
-export default class OutputAllLifeCyclePlugins {
+export default class OutputAllLifeCyclePlugins implements WebpackPluginInstance {
   options: { disableLog: boolean };
   constructor(options: { disableLog: boolean }) {
     this.options = options;

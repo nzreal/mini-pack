@@ -10,6 +10,7 @@
   "scripts": {
     "build-demo": "cd ./packages/demo && yarn build",
     "build-test": "cd ./packages/webpack-test && yarn build-test",
+    "webpack-help": "cd ./packages/webpack-test && yarn webpack-help",
     "setup": "ts-node ./scripts/setup.ts",
     "prepare": "husky install"
   },
@@ -20,6 +21,7 @@
     "@typescript-eslint/parser": "^4.32.0",
     "commitlint": "^13.2.0",
     "eslint": "^7.32.0",
+    "fs-extra": "^11.1.0",
     "husky": "^7.0.2",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.3"
